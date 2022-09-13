@@ -71,11 +71,27 @@ docker build -t mysqlmbtamasterimg .
 docker run --rm --name mysqlserver -p 33061:3306 --network MBTANetwork -d mysqlmbtamasterimg
 ```
 *note: the port on the local machine will be 33061 as 3306 is not available.*
+
+CDC with Debezium not complete in this project. Follow instructions from [this repo](https://github.com/aarondaniels/change_data_capture_debezium) to fully incorporate CDC with Debezium to the docker network. 
+
 ### Initialize the Flask server on your local machine 
 - The Flask server for this project is captured [here](). 
 - Modify the code in the [mysqldb.py]() and [MBTAApiClient.py]() files to include the columns defined in the `mbta_busses` SQL table
 - In order to use Mapbox, you will need to create an access token. Follow the instructions at this site to obtain your own access token. With token available, update the [index.html]() file with the access token. 
-- From VS Code, run the `server.py` file  **running into error at this point - unable to locate mbtadb despite confirming it exists in docker via mysql workbench** 
-- Open a browser window and navigate to localhost:3000
+- From VS Code, run the `server.py` file. Confirm that the server is working by (1) noting the prompts within terminal, `--- dat date time year ---` (2) observing the data being collected in the MySQL database. 
+- Open a browser window and navigate to localhost:3000. A visual of the MapBox map should be visible. 
 
 ### Allow the server to run for at least 12 hours, storing data in the MySQL database. 
+
+### Perform analytics on data captured from server ###
+
+## Recap ##
+The flask server contains several components. Let's recap what the components are and why they're important in this application: 
+1. [index.html](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/templates/index.html): Within the Templates folder, there is an index file. This file provides the graphical images displayed in the flask server when viewed by a browser at the defined location. In this case, localhost:3000. It contians the necessary information from MapBox in order to display a map of Boston, where the bus data is being captured, and provide a display of the datapoints relative to the geographic location where they were captured. 
+2. [MBTAApiClient.py](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/MBTAApiClient.py): This file contains a python function that is used to capture data from the MBTA REST API and return the requested information in a list. 
+3. [client.py](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/client.py): This file defines two functions. (1) a function to load the location data for the bus' and (2) a function to publish the data capture together with a time stamp
+4. [mysqldb.py](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/mysqldb.py): This file defines a function that takes, as input, the MBTA list, creates a connection with the MySQL docker db, and inserts content requested by the API into the MySQL db. 
+5. [servery.py](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/server.py): This file brings it all together and defines the structure of the Flask server. It makes calls to functions defined in the [MBTAApiClient file](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/MBTAApiClient.py) to fetch the data, defines the timer for capturing data, defines the app routes, including the map and buss locations (note, this route is currently incomplete).
+
+### non flask server files ### 
+1. [MBTA_API_Call](https://github.com/aarondaniels/Transit_data_and_APIs/blob/main/FlaskServer/MBTA_API_Call.ipynb): This file is used to test the API call to MBTA and return the data in JSON format. This is used to (1) test the connection and (2) view the data so that desired fields could be determined. 
