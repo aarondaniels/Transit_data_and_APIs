@@ -8,19 +8,19 @@ def callMBTAApi():
         data = json.loads(url.read().decode())
         for bus in data['data']:
             busDict = dict()
-            # complete the fields below based on the entries of the SQL table
+            # complete the fields below based on the entries of your SQL table
             busDict['route_number'] = 1
             busDict['id'] = bus['id']
-            busDict['bearing'] = bus['attributes']['bearing']
             busDict['current_status'] = bus['attributes']['current_status']
             busDict['current_stop_sequence'] = bus['attributes']['current_stop_sequence']
-            busDict['direction_id'] = bus['attributes']['direction_id']
             busDict['label'] = bus['attributes']['label']
             busDict['longitude'] = bus['attributes']['longitude']
             busDict['latitude'] = bus['attributes']['latitude']
-            busDict['occupancy_status'] = bus['attributes']['occupancy_status']
             busDict['speed'] = bus['attributes']['speed']
+            busDict['bearing'] = bus['attributes']['bearing']
+            busDict['occupancy_status'] = bus['attributes']['occupancy_status']
             busDict['updated_at'] = bus['attributes']['updated_at']
+            busDict['direction_id'] = bus['attributes']['direction_id']
             mbtaDictList.append(busDict)
     mysqldb.insertMBTARecord(mbtaDictList) 
 

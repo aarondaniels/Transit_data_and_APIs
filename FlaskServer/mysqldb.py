@@ -3,6 +3,7 @@ import mysql.connector
 def insertMBTARecord(mbtaList):
     mydb = mysql.connector.connect(
     host="localhost",
+    port="33061",
     user="root",
     password="MyNewPass",
     database="MBTAdb"
@@ -10,14 +11,10 @@ def insertMBTARecord(mbtaList):
 
     mycursor = mydb.cursor()
     #complete the following line to add all the fields from the table
-    sql = "insert into mbta_buses (route_number, id, bearing, current_status, current_stop_sequence, direction_id, label, latitude, longitude, occupancy_status, speed, updated_at) values (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "insert into mbta_buses (id,longitude, latitude, speed, bearing, occupancy_status, updated_at, direction_id) values (%s,%s,%s,%s,%s,%s,%s,%s)"
     for mbtaDict in mbtaList:
         #complete the following line to add all the fields from the table
-        val = (mbtaDict['route_number'],mbtaDict['id'], mbtaDict['bearing'], mbtaDict['current_status'], mbtaDict['current_stop_sequence'], mbtaDict['direction_id'], mbtaDict['label'], mbtaDict['latitude'], mbtaDict['longitude'], mbtaDict['occupancy_status'], mbtaDict['speed'], mbtaDict['updated_at'])
+        val = (mbtaDict['id'], mbtaDict['longitude'], mbtaDict['latitude'], mbtaDict['speed'], mbtaDict['bearing'], mbtaDict['occupancy_status'], mbtaDict['updated_at'], mbtaDict['direction_id'])
         mycursor.execute(sql, val)
 
     mydb.commit()
-
-
-
-
